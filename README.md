@@ -9,7 +9,7 @@ Non è un esame troppo difficile, se si sono seguiti i laboratori con attenzione
 ### PARTE 1️⃣: TEORIA
   Nella pagina sopra riportata vi è un questionario con buona parte delle domande di teoria che potrebbero uscire all'esame e relative risposte.  
   Meglio ancora integrare con le slide di virtuale della prof.ssa [**Anna Ciampolini**](https://www.unibo.it/sitoweb/anna.ciampolini).  
-  Inoltre nella teoria si trova sempre un esercizio (abbastanza semplice) da svolgere su carta sulla gestione dei processi, nella cartella "Esercizi_Teoria" si possono trovare diversi di essi per allenarsi.
+  Inoltre nella teoria si trova sempre un esercizio (abbastanza semplice) da svolgere su carta sulla gestione dei processi in C, nella cartella "Esercizi_Teoria" si possono trovare diversi di essi per allenarsi (consiglio di partire dai due esempi che sono molto intuitivi ed ottimi per iniziare).
 ### PARTE 2️⃣: C / Shell
   All'interno delle librerie si trovano le rispettive cartelle, consiglio di partire dai template che contengono già diverse funzioni molto utilizzate negli esami per poi integrare con gli elementi nelle cartelle "utilities" e guardando vecchie prove d'esame simili.
   (da notare che per shell e java ho inserito dei PDF con tutte le prove d'esame più recenti).
