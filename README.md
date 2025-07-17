@@ -16,3 +16,5 @@ Non è un esame troppo difficile, se si sono seguiti i laboratori con attenzione
 ### PARTE 3️⃣: Monitor
   All'interno delle librerie si trova un template di monitor, utile per allenarsi, tuttavia io consiglio sempre di partire da vecchie prove d'esame.  
   In caso si voglia partire da questo, nella cartella del template è presente un file di testo con alcune istruzioni su come si usa.
+
+## 📚Buono studio!
