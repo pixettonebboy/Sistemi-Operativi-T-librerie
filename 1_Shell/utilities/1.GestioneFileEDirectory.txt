@@ -1,0 +1,10 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+cp file dest          # Copia file
+mv file dest          # Sposta o rinomina file
+rm file               # Rimuove file
+basename /path/file   # Estrae solo il nome del file dal path
+chown user file       # Cambia il proprietario di un file
+
+rm -rf /percorso/cartella/* #svuota dir

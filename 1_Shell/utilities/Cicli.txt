@@ -1,0 +1,20 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+# FOR
+for i in 1 2 3; do ...; done
+for i in {1..5}; do echo $i; done
+for i in $(cat file.txt); do echo $i; done
+for i in *; do echo $i; done
+
+# WHILE
+while condizione; do ...; done
+
+# Esempio:
+i=0
+while [ $i -lt 5 ]; do
+  echo $i
+  i=$(expr $i + 1)
+done
+

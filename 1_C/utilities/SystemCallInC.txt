@@ -1,0 +1,40 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+
+
+//SYSTEM CALL IN C
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+open()
+
+int fd = open("file", O_RDONLY); // solo lettura
+int fd = open("file", O_WRONLY | O_CREAT | O_TRUNC, 0644); // scrittura
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+read() e write()
+
+read(fd, &var, sizeof(var));
+write(fd, &var, sizeof(var));
+
+/*
+File testuali: leggi/scrivi char alla volta
+File binari: leggi/scrivi strutture intere
+*/
+
+read(fd, &oggetto, sizeof(struct tipo));
+write(fd, &oggetto, sizeof(struct tipo));
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+lseek()
+
+lseek(fd, offset, SEEK_SET / SEEK_CUR / SEEK_END);
+
+/*
+Per spostare il puntatore nel file.
+Lettura al contrario: leggere char e tornare indietro con lseek.
+*/
+
+lseek(fd, -1, SEEK_END); // fine file
+read(fd, &c, 1);
+lseek(fd, -2, SEEK_CUR);
+

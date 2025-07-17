@@ -1,0 +1,14 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+grep "parola" file         # Cerca righe che contengono "parola"
+grep -o "parola" file      # Stampa solo la parola (una per riga)
+grep -c "parola" file      # Conta quante righe contengono "parola"
+cut -d';' -f2 file         # Estrae seconda colonna usando ; come separatore
+sort file                  # Ordina righe alfabeticamente
+rev file                   # Inverte caratteri in ogni riga
+head -n 5 file             # Prime 5 righe
+tail -n 5 file             # Ultime 5 righe
+tee file                   # Duplica output: schermo + file
+

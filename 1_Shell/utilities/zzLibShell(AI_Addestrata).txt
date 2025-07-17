@@ -1,0 +1,640 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+COMANDI SHELL Linux utili
+
+-grep <testo> [<file>...]
+	Ricerca di testo. Input: (lista di) file. Output: video
+	-i: ignora maiuscole/minuscole.
+	-n: mostra il numero di riga accanto al risultato.
+	-o: mostra le occorrenze
+	-c: conta il numero di righe che contengono un match per l'espressione
+	    o il pattern specificato ( -c [pattern] [file] )
+	
+-tee [<file>...]
+	«Sdoppia» l’input scrivendolo sia su file, sia su video
+	
+-sort [<file>...]
+	Ordina alfabeticamente le linee. Output: video
+	-r: ordina in ordine inverso (decrescente).
+	-n: ordina numericamente.
+	
+-rev [<file>...]
+	Inverte l’ordine delle linee di file. Output: video
+	
+-cut [-options] [<file>...]
+	Seleziona colonne da file. Output: video
+	-f: seleziona colonne specifiche (es. `-f1,3` per prima e terza).
+	-d: definisce il delimitatore (es. `-d,` per file CSV).
+	
+-head [-options] [<file>...]
+	Filtra la «testa» del file. Output: video
+	-n <N>: specifica il numero di righe da mostrare (es. `-n 5`).
+	
+-tail [-options] [<file>...]
+	Filtra la «coda» del file. Output: video
+	-n <N>: specifica il numero di righe da mostrare (es. `-n 5`).
+
+-cat [<file>...]
+	Concatena e visualizza il contenuto di file. Output: video
+	
+-wc [<file>...]
+	Conta righe (-l), parole (-w), byte (-c) o caratteri (-m) nei file. Output: video
+
+-echo <testo>
+	Mostra a video una stringa di testo. Output: video
+	-n: non aggiunge un ritorno a capo alla fine.
+
+-uniq [<file>...]
+	Rimuove linee duplicate consecutive da file. Output: video
+	-c: conta quante volte ogni linea appare.
+	-d: mostra solo le linee duplicate.
+	-u: mostra solo le linee uniche.
+	
+-sleep 5s
+
+-dirname <path>
+	Estrae la directory da un percorso file, rimuovendo il nome del file. Utile per identificare la directory contenente un file o uno script. 
+	Esempio:
+		$ dirname /home/user/file.txt
+		/home/user
+	Output: video
+	
+-cd <path>
+	cambia il direttorio corrente
+	
+-cp <file1> <path/file2>
+	-se il 2o arg è path:	copia file1, col nome originale, nel path path
+	-se il 2o arg è file2:	copia file1, col nome di file2, nella direcotry corrente
+
+-stat [<file>]
+	Visualizza informazioni dettagliate sui file o directory. Output: video.
+	--format=%u: mostra l'UID (User ID) del proprietario del file.
+	--format=%s: mostra la dimensione del file in byte.
+	--format=%F: mostra il tipo di file (es. "directory", "regular file").
+	--format=%y: mostra la data e ora dell'ultima modifica al file.
+		Esempio:
+		$ stat --format="Size: %s bytes, UID: %u, Tipo: %F" file.txt
+
+------------------------------------------------------
+$USER per vedere user che lancia processo
+-------------------------------------------------------------
+RIDIREZIONE
+comando < file_input     (aperto in lettura)
+comando > file_output    (aperto in scrittura [nuovo o sovrascritto])
+comando >> file_output   (scrittura in append)
+
+• ls -l > file
+file conterrà il risultato di ls –l
+• sort < file > file2
+Ordina il contenuto di file scrivendo il
+risultato su file2
+• echo ciao >> file
+Scrive il testo «ciao» in append su file
+
+--------------------------------------------------------
+
+PIPING
+
+who | wc –l      (Conta gli utenti collegati)
+
+ls -l | grep ^d | rev | cut -d' ' -f1 | rev
+(lista i file del dir corrente, ordina le righe che cominciano per d (le dir), vengono rovesciate le righe,
+viene tagliata la prima colonna considerando lo spazzio come delimitatore rimanendo i nomi dei file e poi vengono raddrizzati di nuovo)
+
+comando AWK
+awk '<pattern> { action }' [<file>...]
+
+• awk '/str/ { print }' file1
+equivalente a grep str file1
+• awk '/^In/ { print }' file1
+filtra e stampa a video tutte le linee di file1 che iniziano (^) con la stringa "In"
+• awk '/^In/ { print $2 }' file1
+stampa solo la seconda parola (usando lo spazio come delimitatore implicito)
+• awk –F';' '{ print $4}' file1
+stampa il quarto campo usando ';' come delimitatore
+• ls –la | awk '{ print $3"***"$1}'
+Filtra l’out di ls considerando implicitamente come delimitatore gli spazi (anche multipli). Stampa solo il 3°e 1°campo separati da ***
+
+--------------------------------------------------------
+
+METACARATTERI
+
+*	una qualunque stringa di zero o più caratteri in un nome di file
+?	un qualunque carattere in un nome di file
+[zfc]	un qualunque carattere, in un nome di file, compreso tra quelli nell'insieme. E’ possibile esprimere intervalli di valori: [a-d]
+#	commento fino alla fine della linea
+\	Escape: segnala di non interpretare il carattere successivo come speciale
+
+• ls [q-s]* 
+elenca i file con nomi che iniziano con un carattere compreso tra q e s
+
+• ls [a-p,1-7]*[c,f,d]?
+elenca i file i cui nomi hanno come iniziale un carattere compreso tra 'a' e 'p' oppure tra 1 e 7, e il cui penultimo carattere sia 'c', 'f', o 'd‘
+
+• cat esempio.txt > out\*.txt
+Scrive il contenuto del file esempio.txt nel file di nome “out*.txt”.
+
+----------------------------------------------------------
+
+SHELL SCRIPTING
+
+#!/bin/bash
+
+VAR nome della variabile (l-value)
+$VAR valore della variabile VAR (r-value)
+
+expr per le espressioni
+A='expr 1 + 2'
+###
+X=5
+X=`expr $X + 1`
+
+echo "<`pwd`>"
+Restituisce: </Users/AnnaC> (ovvero il direttorio corrente)
+echo '<`pwd`>'
+Restituisce: <`pwd`>
+
+-----------
+VARIABILI POSIZIONALI:
+$0 rappresenta il comando stesso
+$1 rapp il primo argomento .........
+
+shift    fa scorrere tutti gli argomenti a sx
+
+set x1 x2 x3 .....     riassegna gli argomenti ($0 escluso)
+
+• $* insieme di tutte le variabili posizionali, che corrispondono ad argomenti del comando: $1, $2, ecc.
+• $# numero di argomenti passati ($0 escluso!)
+• $$ id numerico del processo in esecuzione (pid)
+• $? valore (int) restituito dall'ultimo comando eseguito
+
+--------------
+
+• read var1 var2 var3
+le stringhe in ingresso vengono attribuite alle variabili secondo corrispondenza posizionale
+
+--------------
+TEST
+
+• test –f <nomefile>	esistenza di file
+• test –d <nomefile>	esistenza di direttori
+• test –r <nomefile>	diritto di lettura sul file (-w e –x)
+
+• test -z <stringa>	vero se stringa nulla
+• test <stringa>	vero se stringa non nulla
+• test <stringa1> = <stringa2>	     uguaglianza stringhe
+• test <stringa1> != <stringa2>      diversità stringhe
+
+• test <val1> -gt <val2>	(val1>val2)
+• test <val1> -lt <val2>	(val1<val2)
+• test <val1> -le <val2>	(val1<=val2)
+• test <val1> -ge <val2>	(val1>=val2)
+
+al posto di "test ...."   --->   "[....]"
+altrimenti [[ .... ]]  per poter usare operatori && e || anche > e < e per i metacaratteri
+
+
+=~	per le regula expression
+[[ $a =~ ^[0-9]+$ ]]
+restituisce 0 (=vero) se $a contiene una stringa tale che:
+- ^…$ à dall’inizio alla fine
+- + à presenta una o più occorrenze di
+- [0-9] à caratteri tra 0 e 9
+
+
+if <condizioni>;then
+<comandi>
+[elif <condizioni>;then
+<comandi>]
+[else
+<comandi>]
+fi
+
+case <var> in
+<pattern-1>) <comandi>;;
+...
+<pattern-i> | <pattern-j> | <pattern-k>) <comandi>;;
+...
+<pattern-n>) <comandi> ;;
+esac
+
+-----------------------------------
+for <var> [in <list>] #list=lista di stringhe
+do
+<comandi>
+done
+
+• for i in * ; do
+👉 ripete per ogni file nel direttorio corrente
+
+• for i in `ls s*` ; do
+  <comandi>
+  done
+👉ripete per ogni file che inizia per s nel direttorio corrente
+
+• for i in `cat file1` ; do
+  <comandi >
+  done
+👉ripete per ogni parola contenuta in file1
+
+• for i in 0 1 2 3 4 5 6 ; do
+  echo $i
+  done
+👉 ripete per i=0, i=1,.. i=6
+
+• for i in "$@" ; do
+👉 meglio di $* per gestire elementi con spazi
+
+• for i in "$d"/*  
+👉 per ciclare su tutti i file del direttorio d
+
+while <condizione o lista-comandi>
+do
+  <comandi>
+done
+
+-----------------------------------
+CHIAMATA RICORSIVA
+
+"$0" ......
+#richiami il nome del comando in esec
+
+----------------------------------
+
+COPIA E INCOLLA
+
+#controllo argomenti
+if [[ $# -ne 4 ]]; then
+    echo "Errore: numero di argomenti non corretto" 
+    echo -e "Usage:\n\t$0 dirin word N dirout" 
+    exit 1
+fi
+
+#controllo directory esistente
+if [ -d $1 ]; then echo $1 è una directory esistente
+else echo $1 non è una directory; exit; fi
+
+# Controllo se $1 è un path assoluto e se è una directory esistente
+if [[ "$1" = /* ]]; then
+    # Si tratta di un percorso assoluto
+    if [ ! -d "$1" ]; then
+        echo "$1 non è una directory esistente"
+        exit 2
+    fi
+else
+    echo "$1 non è un percorso assoluto"
+    exit 1
+fi
+
+#controllo intero positivo
+if ! [[ "$B" =~ ^[0-9]+$ ]] ; then
+  echo $B non è un intero positivo
+  exit 4
+fi
+#altirmenti
+if [[ $2 = *[!0-9]* ]] ; then
+    echo "$2 non è un intero positivo" 1>&2
+    exit 1
+fi
+
+#controllo basename e leggibilità file 
+case "$F" in    
+  */*) echo $F non è un basename ;;    
+  *)  if [ ! -f "$HOME/$F" ]; then
+        echo $F non è un file
+        exit 2
+      fi
+      if [ ! -r "$HOME/$F" ]; then
+        echo $F non è leggibile
+        exit 3
+      fi
+esac
+# in questo caso F deve essere un basename di un file esistente e leggibile
+posizionato nella home directory dell’utente che ha invocato lo script.
+
+#controllo che M sia pari
+if [[ $(expr $M % 2) -eq 0 ]]; then
+    echo "$M è pari"
+fi
+
+D=`ls -l "$F" | awk '{print $5}'`
+# D sarà uguale alla dimensione del file F
+
+
+echo Immetti il path assoluto del file di output.
+read Fout
+#leggere da tastiera
+
+
+case "$Fout" in    #verifico che sia un nome assoluto
+    /*) ;;    
+    *)  echo  $Fout non è un nome assoluto
+        exit 2;;
+esac
+
+
+case "$1" in
+/*) 
+    #la directory inizia per /
+    #controllo anche che sia davvero una directory esistente  
+    if ! [[ -d "$1" ]]; then
+        echo "Errore: $1 non esiste o non è una directory" 
+        exit 3
+    fi
+    ;;
+*)
+    #il nome della directory non inizia per /, quindi non è un path assoluto
+    echo "$1 non è una directory assoluta" 
+    exit 4
+    ;;
+esac
+
+
+if [ -f "$Fout" ]; then
+    rm $Fout
+fi
+#elimina il file di nome contenuto in Fout nel caso dovesse esistere
+
+
+if [ ! -d "$i" ]
+    then    echo Il  parametro $i deve essere una directory esistente
+            exit 2
+    fi
+    
+    
+U=`ls -l "$F" | awk '{print $3}'` 
+#U sarà uguale al proprietario del file F
+
+
+count=`grep -o $S "$f"|wc -l`
+#assegna a count il num di occ della stringa $S nel file $f
+
+
+#creo il file di output
+echo "" > $outfile
+
+#creo il direttorio
+mkdir "$dir"
+
+#creo il fileout posizionato nella home dell'utente (nel caso dovesse esistere verrà cancellato il contenuto)
+echo "" > $HOME"/fileout.txt"
+
+
+echo  Sono stati trovati `cat "$HOME/report.log" | grep $$ | wc -l` file con le caratteristiche date.
+#conta le righe dal file che contengono il pid perche magari su quel file c era gia scritto altro
+
+
+recfile=recursion.sh
+#definizione della stringa da invocare per l'esecuzione del file comandi ricorsivo:
+case "$0" in
+    # il file comandi è stato invocato con un / Path assoluto.
+    /*) 
+    dir_name=`dirname "$0"`
+    recursive_command="$dir_name"/$recfile
+    ;;
+    */*)
+    # il file comandi è stato invocato con un path relativo.
+    dir_name=`dirname "$0"`
+    recursive_command="`pwd`/$dir_name/$recfile"
+    ;;
+    *)
+    #Path né assoluto né relativo, il comando è nel $PATH
+    recursive_command=$recfile
+    ;;
+esac
+#e poi lo si avvia
+$recursive_command .... (di solito si rimettono tutti gli argomenti passati al primo programma)
+
+#oppure
+
+# In questo caso, se avessi utilizzato test oppure [, 
+# che sono comandi esterni, non avrei avuto l'espansione dell'*,
+# in quanto l'espansione dei metacaratteri avviene dopo l'esecuzione
+# di comandi in bash.
+if [[ "$0" = /* ]] ; then
+    #Iniziando con /, si tratta di un path assoluto
+    #(eg /home/andrea/recurse_dir.sh)
+
+    #Estrazione di parti di path: man dirname oppure man basename
+    dir_name=`dirname "$0"`
+    recursive_command="$dir_name/do_recurse_dir.sh"
+elif [[ "$0" = */* ]] ; then
+    # C'è uno slash nel comando, ma non inizia con /. Path relativo
+    dir_name=`dirname "$0"`
+    recursive_command="`pwd`/$dir_name/do_recurse_dir.sh"
+else 
+    # Non si tratta ne di un path relativo, ne di uno assoluto.
+    # E' un path "secco": il comando sarà dunque cercato
+    # nelle cartelle indicate dalla variabile d'ambiente $PATH.
+    recursive_command=do_recurse_dir.sh
+fi
+#Invoco il comando ricorsivo
+"$recursive_command" "$1" "$2" "$3" "$outfile"
+
+#usa il primo  quando hai diversi pattern da confrontare e preferisci 
+ una struttura chiara e leggibile per il matching.
+#usa il secondo  per confronti precisi o per fare operazioni di confronto con 
+ espressioni regolari.
+
+
+
+
+
+**************************************************************************SCRITTO DA ME!********************************************************
+
+
+
+
+
+= = RICORRENTI = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+# Conto occorrenze parola sul file
+OCCORRENZE=`grep -o "parola" dirFile | wc -l`
+OCCORRENZE=`grep -c "parola" dirFile
+
+# Controllo diritti su file
+if ! [[ -r "$DIR" ]] ; then
+    echo "ERRORE: Mancanza di diritti lettura su file"
+    exit;
+fi
+
+# X PAROLA DI UN FILE (PRIMA RIGA)
+FORN=`head $1 | awk '{ print $2}'`
+
+chown User File   <---  Cambia il proprietario di un file 
+
+
+
+= = COMANDI = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+cp <dir> <nuovaDir>   | Copia un file
+
+mv <dir> <nuovaDir>   | Sposto / Rinomino un file
+
+rm <dir>  | Cancella un file
+
+basename <dir>  | Fornisce il nome di un file dalla directory
+
+GREP      | Ricerca di testo
+es:
+
+TEE       | Sdoppia l'input scrivendolo sia su file che su video
+
+SORT      | Ordina alfabeticamente le linee del testo
+
+REV       | inverte l'ordine dei caratteri in ogni riga del testo
+
+CUT       | Seleziona colonne del testo
+
+HEAD      | Filtra la testa del testo
+
+TAIL      | Filtra la coda del testo
+
+
+
+
+AWK       | Ricerca su testo ed esegue azioni
+es:
+  awk '/^In/ { print }' file1       (filtra e stampa a video tutte le linee di
+                                     file1 che iniziano (^) con la stringa "In")
+  
+  awk '/^In/ { print $2 }' file1    (stampa solo la seconda parola ,usando
+                                     spazio comedelimitatore implicito)
+
+  awk –F';' '{ print $4}' file1     (stampa il quarto campo usando ';' come delimitatore)
+
+  awk '{ print $3"***"$1}'          (Stampa solo il 3°e 1° campo separati da '***')
+
+SET       | Riassegna tutti gli argomenti di chiamata
+
+
+EXPR `es` | Esegue l'espressione tra le backtick
+es:
+  echo risultato: ‘expr 5 + 1‘
+
+
+READ var1 var2...   | Legge da standard input
+
+
+ECHO ...            | Stampa stringa in output
+
+
+
+
+= = CONTROLLO = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+TEST espressione  | Restituisce 0 = VERO  1 = FALSO
+es:
+  test –f <nomefile>   (esistenza di file)
+  test –d <nomefile>   (esistenza di direttori)
+  test –r <nomefile>   (diritto di lettura sul file (altri sono -w e –x))
+  test -z <stringa>    (vero se stringa nulla)
+  test <stringa>       (vero se stringa non nulla)
+  test <stringa1> = <stringa2>    (uguaglianza stringhe)
+  test <stringa1> != <stringa2>    (diversità stringhe)
+  test <val1> -gt <val2> (val1>val2)    (posso usare altrimenti -ge -lt -le)
+  test $1          (vero se $1 è stato inizializzato)
+
+Posso sostituire test con le parentesi [], che esegue un test.
+es:
+  test –d mydir   ->  [ -d mydir ]
+
+Posso sostituire test con una regular [[...]], che esegue un test ma di comandi.
+es:
+  [[ $a =~ ^[0-9]+$ ]]  (=~ equivale ad 'equals')
+  
+  restituisce 0 (=vero) se $a contiene una stringa tale che: 
+    ^…$   $a dall’inizio alla fine
+    +    $a presenta una o più occorrenze di
+    [0-9]   caratteri tra 0 e 9
+
+
+if <condizioni>;then
+  <comandi>
+elif <condizioni>;then
+  <comandi>
+else
+  <comandi>
+fi
+
+nel'IF devo usare   -a come AND
+es:
+  if test $1 = si -a $2 -le 24
+    then echo si
+    else echo no
+  fi
+
+for <var> [in <list>]
+do
+  <comandi>
+done
+
+es:
+  for i in *      (ripete per ogni file nel direttorio corrente)
+  
+  for i in `ls s*` ; do    (ripete per ogni file che inizia per s nel direttorio corrente)
+    <comandi>
+  done
+
+  for i in `cat file1` ; do    (ripete per ogni parola contenuta in file1)
+    <comandi>
+  done
+
+  for i in 0 1 2 3 4 5 6 ; do    (ripete per i=0, i=1,.. i=6)
+    echo $i
+  done
+  
+  for i in {1..5} 			(posso passare un range)
+  
+  for (( i=$START; i<=$END; i++ ))     (posso passare un range dettato da parametri)
+
+
+  while <condizione o lista-comandi>
+  do
+     <comandi>
+  done
+
+
+= = REDIREZIONE = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+redirezione dell'input, file aperto in lettura e mandato al comando
+  comando < file_input
+
+redirezione dell'output
+  comando > file_output   (nuovo o sovrascritto)
+  comando >> file_output  (scrittura in append)
+
+possono essere anche accodati
+es:
+  sort < file > file2    (Ordina il contenuto di 'file' scrivendo il risultato su 'file2')
+
+piping, l'output del primo viene mandato al secondo come input
+es:
+  who | wc –l     (Conta gli utenti collegati)
+
+
+
+
+= = METACARATTERI = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+ *       -> una qualunque stringa di zero o più caratteri in un nome di file
+ ?       -> un qualunque carattere in un nome di file
+ [zfc]   -> un qualunque carattere, in un nome di file, compreso tra quelli nell'insieme.
+            E’ possibile esprimere intervalli di valori: [a-d]
+ #       -> Commento
+ \       -> Non interpreta prossimo carattere come speciale
+ ``      -> (backtick, AltGr+') considera il testo al suo interno come eseguibile
+ $*      -> Riporta tutti gli argomenti passati
+ $#      -> Riporta il numero di argomenti passati ($0 escluso)
+ $$      -> PID del processo in esecuzione
+ $?      -> Valore (intero) restituito dall'ultimo comando eseguito
+
+es:
+  ls [q-s]*   (elenca i file con nomi che iniziano con un carattere compreso tra q e s)
+
+  ls [a-p,1-7]*[c,f,d]?     (elenca i file i cui nomi hanno come iniziale un carattere compreso tra 'a'
+                             e 'p' oppure tra 1 e 7, e il cui penultimo carattere sia 'c', 'f', o 'd‘)
+  
+  ls *\**      (Elenca i file che contengono nel nome, in qualunque posizione, il carattere *)

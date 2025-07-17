@@ -1,0 +1,30 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+GESTIONE SPORTELLI / RISORSE MULTIPLE
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Stato libero/occupato con boolean[]
+
+private boolean[] libero;
+
+public Monitor(int N) {
+    libero = new boolean[N];
+    for (int i = 0; i < N; i++)
+        libero[i] = true;
+}
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Ricerca di posto libero
+
+int posto = -1;
+for (int i = 0; i < N; i++) {
+    if (libero[i]) {
+        libero[i] = false;
+        posto = i;
+        break;
+    }
+}
+

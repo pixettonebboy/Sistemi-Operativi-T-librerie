@@ -1,0 +1,9 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+awk '/^In/ { print }' file        # Righe che iniziano per "In"
+awk '/^In/ { print $2 }' file     # Seconda parola di righe che iniziano per "In"
+awk -F';' '{ print $4 }' file     # Quarta colonna con separatore ";"
+awk '{ print $3 "***" $1 }'       # Stampa 3° e 1° campo separati da ***
+

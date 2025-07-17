@@ -1,0 +1,74 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Import necessari
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Struttura
+
+public class Monitor {
+    private final Lock lock = new ReentrantLock();
+    private final Condition coda = lock.newCondition();
+
+    public void metodo() throws InterruptedException {
+        lock.lock();
+        try {
+            while (condizione) {
+                coda.await();    // attende
+            }
+            // sezione critica
+            coda.signal();       // sveglia uno
+            // coda.signalAll(); // sveglia tutti
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+ES. DI CHAT:
+
+Ecco la struttura completa e riusabile in un’esercitazione:
+
+🧩 Campi:
+
+private Lock lock = new ReentrantLock();
+private Condition coda = lock.newCondition(); // o più code
+
+private int risorsa = 1; // es: numero posti disponibili
+
+
+⚙️ Metodo di entry (es: entra in sala):
+
+public void entra(int id) throws InterruptedException {
+    lock.lock();
+    try {
+        while (risorsa == 0)
+            coda.await(); // aspetta che si liberi
+
+        risorsa--;
+    } finally {
+        lock.unlock();
+    }
+}
+
+
+🚪 Metodo di uscita:
+
+public void esci(int id) {
+    lock.lock();
+    try {
+        risorsa++;
+        coda.signal(); // risveglia un thread (se c'è)
+    } finally {
+        lock.unlock();
+    }
+}

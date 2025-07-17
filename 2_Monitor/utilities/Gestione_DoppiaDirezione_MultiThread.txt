@@ -1,0 +1,44 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+(es. ponte IN/OUT)
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Costanti e strutture
+
+final int IN = 0, OUT = 1;
+private int[] nIN = new int[2];
+private int[] sospN = new int[2];
+private Condition[] codaN = new Condition[2];
+private Lock lock = new ReentrantLock();
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Inizializzazione del costruttore
+
+for (int i = 0; i < 2; i++) {
+    nIN[i] = 0;
+    sospN[i] = 0;
+    codaN[i] = lock.newCondition();
+}
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Esempio di metodo
+
+public void entra(int dir, int id) throws InterruptedException {
+    lock.lock();
+    try {
+        while (condizione) {
+            sospN[dir]++;
+            codaN[dir].await();
+            sospN[dir]--;
+        }
+        nIN[dir]++;
+    } finally {
+        lock.unlock();
+    }
+}
+
+

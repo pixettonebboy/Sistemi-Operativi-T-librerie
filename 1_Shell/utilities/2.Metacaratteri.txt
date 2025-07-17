@@ -1,0 +1,29 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+*        # Qualunque stringa
+?        # Un solo carattere
+[zfc]    # Uno dei caratteri tra z, f, c
+[a-z]    # Intervallo di caratteri
+\        # Escape di carattere speciale
+$#       # Numero argomenti passati
+$*       # Tutti gli argomenti
+$$       # PID dello script
+$?       # Codice uscita ultimo comando
+
+
+#ESEMPI
+
+# Prendi seconda parola della prima riga di un file
+FORN=$(head -n 1 "$1" | awk '{ print $2 }')
+
+# Conta le occorrenze di una parola
+OCCORRENZE=$(grep -o "parola" "$file" | wc -l)
+
+# Verifica permessi di lettura
+if ! [ -r "$file" ]; then
+  echo "ERRORE: Nessun permesso di lettura"
+  exit 1
+fi
+

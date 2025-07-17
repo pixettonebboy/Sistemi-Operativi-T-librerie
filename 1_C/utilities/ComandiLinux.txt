@@ -1,0 +1,46 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+
+//COMANDI LINUX UTILI PER ESERCIZI C (GUARDA ANCHE CARTELLA Bash)
+
+//cmd x navigazione e gestione file
+
+ls -l          # lista dettagliata
+ls -a          # mostra file nascosti
+cd DIR         # cambia directory
+pwd            # mostra path corrente
+mkdir DIR      # crea directory
+rmdir DIR      # elimina directory vuota
+touch file     # crea file vuoto
+rm file        # elimina file
+rm -r dir      # elimina ricorsivamente
+cp src dst     # copia file/directory
+mv src dst     # sposta/rinomina file
+
+//redirezione e pipe
+
+>    # stdout in sovrascrittura
+>>   # stdout in append
+<    # stdin da file
+|    # pipe tra due comandi
+
+
+//TEST IN BASH
+
+test -f file       # esiste ed è regolare
+test -d dir        # esiste ed è directory
+test -r file       # file leggibile
+test -w file       # file scrivibile
+test -x file       # file eseguibile
+
+test "$a" -eq "$b"     # numeri uguali
+test "$a" -ne "$b"     # numeri diversi
+test "$a" -gt "$b"     # a > b
+test "$a" = "$b"       # stringhe uguali
+test "$a" != "$b"      # stringhe diverse
+
+[ condizione ]         # forma alternativa
+
+

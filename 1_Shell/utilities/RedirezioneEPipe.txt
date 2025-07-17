@@ -1,0 +1,13 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+comando < input.txt        # Input da file
+comando > output.txt       # Output su file (sovrascrive)
+comando >> output.txt      # Output su file (in append)
+comando1 | comando2        # Pipe: output di 1 → input di 2
+
+# Esempi
+sort < file.txt > ordinato.txt
+who | wc -l                # Conta utenti collegati
+

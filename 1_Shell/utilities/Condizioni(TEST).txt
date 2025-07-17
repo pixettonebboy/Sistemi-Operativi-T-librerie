@@ -1,0 +1,20 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+# Con test
+test -f file               # Esiste file?
+test -d dir                # Esiste directory?
+test -r file               # Lettura permessa?
+test -z "$str"             # Stringa vuota?
+test "$a" = "$b"           # Uguaglianza stringhe
+test "$a" != "$b"          # Diversi
+test $a -gt $b             # Maggiore (anche: -lt, -le, -ge)
+
+# Con []
+[ -f file ]
+[ "$a" = "$b" -a $c -lt 10 ]
+
+# Con [[ ]] (regex e stringhe)
+[[ $a =~ ^[0-9]+$ ]]       # Solo cifre
+

@@ -1,0 +1,32 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Estensione Thread
+
+public class Moto extends Thread {
+    public void run() {
+        // codice da eseguire
+    }
+}
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Implementazione di Runnable (se eredita già un'altra classe)
+
+public class AutoPiccola extends Automobile implements Runnable {
+    public void run() {
+        // codice da eseguire
+    }
+}
+
+-.-.-.-.-.--.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+//Avvio e attesa dei thread
+
+Thread t = new Thread(new AutoPiccola());
+t.start();          // Avvia il metodo run()
+t.join();           // Attende che il thread termini
+

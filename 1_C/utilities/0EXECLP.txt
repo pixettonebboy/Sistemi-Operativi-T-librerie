@@ -1,0 +1,14 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+execlp("cat", "cat", (char*)0);
+
+/*
+Usato dopo aver ridirezionato stdin/stdout per eseguire un comando come cat, sort, ecc.
+
+*/
+
+
+// I-esimo carattere di ogni riga
+execlp("cut", "cut", "-d", " ", "-f", I, Fin, (char *)NULL);

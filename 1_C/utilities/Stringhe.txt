@@ -1,0 +1,14 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+
+strlen(str);                    // Lunghezza
+strcmp(str1, str2);             // 0 se uguali, <0 se str1<str2
+strcpy(dst, src);               // Copia stringa MODO PER ASSEGNARE VALORE A STRINGA ES: char a[40];	strcpy(a, argv[1]);
+strcat(str1, str2);             // Concatena
+isdigit(c);                     // True se c è cifra
+sscanf(&s[2], "%d", &num);      // Parsing da stringa
+sprintf(buf, "...", ...);       // Format in stringa
+atoi(str);                      // Converte stringa in int
+

@@ -1,0 +1,19 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+if [ condizione ]; then
+  comandi
+elif [ altra_condizione ]; then
+  comandi
+else
+  comandi
+fi
+
+# Esempio
+if [ -f "$1" -a -r "$1" ]; then
+  echo "File leggibile"
+else
+  echo "Errore"
+fi
+

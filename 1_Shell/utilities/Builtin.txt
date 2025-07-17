@@ -1,0 +1,8 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+set -- arg1 arg2 ...       # Riassegna tutti gli argomenti passati a uno script
+read VAR1 VAR2             # Legge input da tastiera
+echo "testo"               # Stampa stringa
+

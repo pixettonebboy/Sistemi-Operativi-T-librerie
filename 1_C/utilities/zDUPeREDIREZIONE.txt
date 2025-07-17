@@ -1,0 +1,8 @@
+dup(fd);         // copia fd nel primo slot libero
+dup2(fd, n);     // copia fd su file descriptor n (es: 0 per stdin, 1 per stdout)
+
+close(0);
+dup(pipefd[0]); // stdin ← pipe
+close(1);
+dup(fdout);     // stdout → file
+

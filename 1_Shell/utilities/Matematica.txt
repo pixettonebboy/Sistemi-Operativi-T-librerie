@@ -1,0 +1,6 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+expr 5 + 1                 # Somma (spazi obbligatori)
+

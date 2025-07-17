@@ -1,0 +1,10 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+//definizione costanti globali
+
+final static int MS = 0, FS = 1;
+static int ClientiMS = 10;
+static int ClientiFS = 10;
+

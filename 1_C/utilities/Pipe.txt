@@ -1,0 +1,71 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+
+int pipefd[2];
+pipe(pipefd);
+
+/*
+pipefd[0]: lettura
+pipefd[1]: scrittura
+Chiudere sempre gli estremi inutilizzati:
+*/
+
+close(pipefd[0]); // se scrivi
+close(pipefd[1]); // se leggi
+
+
+
+dup2(pipefd[1], STDOUT_FILENO); // Ridirigi stdout sulla pipe
+
+int stdout_backup = dup(STDOUT_FILENO); //tornare a stdout
+dup2(stdout_backup, STDOUT_FILENO);
+
+
+
+Per scrivere su una pipe in un programma C su Linux/Unix, si usano le system call pipe(), fork() e write().
+
+Ecco un esempio base per scrivere su una pipe da un processo padre a un processo figlio:
+
+🔧 Esempio: padre scrive, figlio legge da una pipe
+c
+Copia
+Modifica
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+int main() {
+    int pipefd[2]; // pipefd[0] per leggere, pipefd[1] per scrivere
+    pid_t pid;
+    char messaggio[] = "Ciao dal padre!";
+
+    if (pipe(pipefd) == -1) {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
+
+    pid = fork();
+
+    if (pid < 0) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // Processo figlio: legge dalla pipe
+        close(pipefd[1]); // Chiude estremità di scrittura
+        char buffer[100];
+        read(pipefd[0], buffer, sizeof(buffer));
+        printf("Figlio ha letto: %s\n", buffer);
+        close(pipefd[0]);
+    } else {
+        // Processo padre: scrive sulla pipe
+        close(pipefd[0]); // Chiude estremità di lettura
+        write(pipefd[1], messaggio, strlen(messaggio) + 1); // +1 per il terminatore '\0'
+        close(pipefd[1]);
+    }
+
+    return 0;

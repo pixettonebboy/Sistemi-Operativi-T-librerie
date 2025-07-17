@@ -1,0 +1,10 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+./script.sh                # Esegue script
+chmod +x script.sh         # Rende eseguibile uno script
+VAR=valore                 # Assegna variabile
+echo $VAR                  # Stampa variabile
+
+sed -i '1s/^\xEF\xBB\xBF//' file.sh  #elimina il carattere speciale invisibile iniziale

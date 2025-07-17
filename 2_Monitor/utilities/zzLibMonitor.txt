@@ -1,0 +1,238 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+
+Classe MAIN:
+
+public class AutoLavaggio{
+	public static void main(String[] args) {
+	...
+	Bancone b= new Bancone();
+	Pasticciere p= new Pasticciere(b);
+	...
+	p.start();           //avvia il metodo run() del thread p
+	...
+	try{
+		p.join();     //controlla che il thread p sia terminato
+	} catch (InterruptedException e) {	}
+}
+---------------------------------------------------------------------------------------
+per le classi THREADS:		public class Moto extends Thread {
+
+per le classi che già estendono qualcosa:	public class AutoPiccola extends Automobile implements Runnable {
+	
+nel costruttore devono avere il monitor, es:
+	Bancone b;
+	
+	public Cliente(int id, Bancone b) {
+		this.id=id;
+		this.b=b;
+	}
+	
+	public void run() {
+		//quello che fa quando viene startato, usa i metodi del monitor
+	}
+------------------------------------------------------------------------------------------
+per la classe MONITOR:		public class Bancone {      (normale)
+
+	implementano i vari metodi, es:
+		public synchronized void depositaPasticcino() {
+		Pasticcini++;
+		}
+	//il synchronized lo usi solo se più threads devo utilizzare quel metodo
+	
+-------------		
+LOCK:
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+Monitor{
+	
+	private Lock L = new ReentrantLock();
+	Condition codaSala= L.newCondition();;
+	Condition codaSport= L.newCondition();;
+	
+	
+	public void metodo(int id) throws InterruptedException {
+		L.lock();
+		try{
+			..........
+		}finally{L.unlock();}
+	}
+
+AWAIT E SIGNAL:
+con .await(); la determinata coda blocca il processo finche non viene sbloccata con .signal();
+.signalAll(); invece segnala tutti quelli della coda
+
+	public void metodo1(int id) throws InterruptedException {
+		L.lock();
+		try{
+			codaSala.await();
+		}finally{L.unlock();}
+	}
+	
+	public void metodo1(int id)  {
+		L.lock();
+		try{
+			codaSala.signal();
+		}finally{L.unlock();}
+	}
+// se hai solo signal() e nessun await() allora non serve il "throws InterruptedException"
+
+-------------------------------------------------------------------------------------
+RANDOM:
+di solito si mette nel main e poi viene passato al costruttore del thread
+
+import java.util.Random;
+
+	Random r = new Random(System.currentTimeMillis());
+	//oppure
+	Random r = new Random();
+	
+	Utente(id, r.nextInt(2));    // r sarà un numero tra 0 e 1
+	
+	
+oppure viene inizializzato nel main, passato r al costruttore del thread, così poi nel metodo run() si può fare tipo:
+
+	public void run() {
+		try {
+			M.EntraP_N(M.IN, id);
+			Thread.sleep(r.nextInt(1000));
+			M.EsceP_N(M.IN, id);
+			Thread.sleep(r.nextInt(10000));
+			M.EntraP_N(M.OUT, id);
+			Thread.sleep(r.nextInt(1000));
+			M.EsceP_N(M.OUT, id);
+		} catch (InterruptedException e) {e.printStackTrace();}
+	}
+	
+-----------------------------------------------------------------------------------
+
+COSE UTILI:
+
+	public class Main {
+			static int AreeAP = 10;
+			static int ClientiMS = 10;
+			static int ClientiFS = 10;
+			
+			final static int MS =0;
+			final static int FS =1;
+			
+			public static void main(String[] args) {
+
+-.-.-.-.
+
+// Creazione e avvio di NT thread rappresentati dalla classe Utente. 
+
+	Utente[] utenti = new Utente[NT];
+	for(int i=0;i<NT;i++)
+		utenti[i]=new Utente(M, i, r.nextInt(2));
+		
+	for(int i=0;i<NT;i++)
+		utenti[i].start();
+
+	try {
+		for(int i=0; i<NT; i++)
+			utenti[i].join();
+	} catch (InterruptedException e) {	}
+	
+.-.-.-.-.-
+
+// Inizializza l'array "sport" (sportello) impostando ogni elemento a 1.
+
+	public int[] sport;
+	
+	costurttore{
+		for(int i=0;i<nsport;i++) {
+			this.sport[i]=1;
+		}
+	}
+
+.-.-.-.-.-.
+
+//utlizzo di try e catch per l'utilizzo di sleep
+
+	try {
+		K=M.richiedeSportello(s, id);
+		Thread.sleep(500);
+	} catch (InterruptedException e) {e.printStackTrace();}
+		
+.-.-.-.-.-..-
+QUANDO DEVI GESTIRE 2 DIREZIONI NEL MONITOR:
+
+	public final int OUT = 0;
+	public final int IN = 1;
+	private int []nIN=new int[2]; //normali sul ponte I/O
+	private Lock lock = new ReentrantLock();
+	private Condition [] codaN = new Condition[2]; //1 coda x dir
+	private int [] sospN = new int[2]; //normali sospesi
+
+	costruttore{
+		.....
+		for(int i=0; i<2; i++) {
+			this.nIN[i]=0;
+			this.codaN[i]=lock.newCondition();
+			this.sospN[i]=0;
+		}
+	}
+	
+	metodo(int dir, int id).....{
+		......
+		if(dir==IN){
+			while(.....) {
+				sospN[dir]++;
+				codaN[dir].await();
+			}
+		} else if(dir==OUT) {
+		
+		public void run() {
+		try {
+			M.EntraP_N(M.IN, id);
+			Thread.sleep(r.nextInt(1000));
+			M.EsceP_N(M.IN, id);
+			Thread.sleep(r.nextInt(10000));
+			M.EntraP_N(M.OUT, id);
+			Thread.sleep(r.nextInt(1000));
+			M.EsceP_N(M.OUT, id);
+		} catch (InterruptedException e) {e.printStackTrace();}
+	}
+			....
+		}
+		.......
+	}
+
+.-.-.-.-.-.-..-
+
+//hai N sportelli che possono essere o liberi o occupati, per indicare questa condizione 
+di ogni sportello puoi fare
+
+public class Monitor {
+	private boolean []libero;//stato occupazione dello sportello
+	
+	public Monitor(int N, Random r) {
+		...
+		for (int i=0; i<N; i++)
+			libero[i]=true;
+		...
+	}
+	
+	metodo() {
+		posto=-1;
+		...
+		//ricerca dell'area da assegnare al cliente:
+		for (int i=0; i<N; i++)
+			if (libero[i])
+			{	libero[i]=false;
+				break;
+				posto=i;
+			}
+		...
+	}
+	
+.-.-.-.-.-.-.-.-.-.
+
+
+
+

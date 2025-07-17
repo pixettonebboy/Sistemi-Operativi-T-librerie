@@ -1,0 +1,886 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+
+gcc file.c -o fex
+(nel caso fex non fosse eseguibile "chmod u+x fex")
+./fex .......
+
+#include <stdio.h>     // Input/output standard (PRINTF, scanf, fprintf, etc.)
+#include <stdlib.h>    // Funzioni standard (malloc, free, ATOI, EXIT, etc.)
+#include <string.h>    // Operazioni sulle STRINGHE (strlen, strcpy, strcmp, etc.)
+#include <ctype.h>     // Funzioni per caratteri (ISDIGIT, isalpha, tolower, etc.)
+#include <unistd.h>    // Funzioni UNIX (FORK, PIPE, READ, WRITE, CLOSE, etc.)
+#include <sys/types.h> // Tipi di dati per processi (pid_t, etc.)
+#include <sys/wait.h>  // Funzioni per la gestione dei processi (WAIT, waitpid, etc.)
+#include <time.h>      // Funzioni per la gestione del tempo (time, ALARM, etc.)
+#include <signal.h>    // Gestione dei segnali (SIGNAL, KILL, sigaction, etc.)
+#include <math.h>      // Funzioni MATEMATICHE (pow, sqrt, ceil, etc.)
+#include <fcntl.h>     // Apertura file (OPEN, O_RDONLY, O_WRONLY, etc.)
+
+#define MAX 10
+
+int main(int argc, char *argv[]) {}
+//dove argc sono il numero di elementi (nome file compreso)
+//e argv[] gli elementi vari (argv[0] nome del file)
+
+strlen(...) //restituisce la lunghezza della stringa all'interno
+strcmp(str1, str2) //dà 0 se sono uguali, >0 se str1 è più "grande", <0 se str1 + piccola
+strcpy(str1, str2); //str1=str2
+strcat(str1, str2); //aggiunge str2 alla fine di str1, le concatena, in str1
+
+isdigit(...) //verifica se l'argomento è una cifra da 0 a 9
+
+sscanf(&prod[2], "%d", &num); //scrive in num gli elementi di prod[] partendo dal terzo
+
+printf("%..." , cosa);
+- %d intero decimale
+- %f float
+- %c carattere
+- %s stringa
+- %ld long
+- %ls stringhe complesse
+(%% per stampare '%')
+
+sprintf(str, "..."); //inserisce nella stringa str l'argomento "..."
+
+atoi(str) //converte la stringa str in un int
+
+srand(time(NULL));
+i=rand()%(10);      //i sarà = ad un int casuale tra 0 e 9
+
+typedef struct{
+    int id; //id core
+    int energy;  //Wh consumati
+}consumo;
+
+switch (signo) {
+        case SIGALRM:
+            ...
+            break;
+        case SIGUSR1:
+            ...
+            break;
+        case SIGUSR2:
+            ...
+            break;
+        default:
+            perror("Segnale inatteso\n");
+            exit(EXIT_FAILURE);
+        }
+
+-------------------------------------
+<<<<<<<<<<<<<< ERRORI >>>>>>>>>>>>>>>
+
+fprintf(stderr,"..."); //utilizzata per la stampa di errori
+perror("..."); //altro modo di stampare errori
+exit(EXIT_FAILURE); 
+exit(EXIT_SUCCESS); 
+//oppure exit([0-255]), con 0 è un successo, gli altri insuccessi
+
+//contollo numero dei parametri
+if(argc!=4){
+        fprintf(stderr,"Numero di argomenti errato.\nUsage:\n\t%s T Car Fin\n", argv[0]);
+        exit(EXIT_FAILURE);
+	}
+	
+//M numero positivo
+    if( ( M =atoi(argv[2]))<0  ){
+        fprintf(stderr,"Intero M deve essere positivo\n");
+        exit(EXIT_FAILURE);
+    }
+    
+//Controllo unico carattere
+    if(strlen(argv[2])!=1){
+        fprintf(stderr,"Il secondo parametro deve essere un singolo carattere\n");
+        exit(EXIT_FAILURE);
+    }  
+
+//Ftext e Fbin path assoluti
+    if (argv[1][0]!='/' || argv[3][0]!='/'){ 
+        //se il parametro passato non inizia per '/' allora non è un nome assoluto
+        perror("Il primo e il terzo parametro devono essere nomi assoluti di file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+//errore in seguito un exec
+  execlp("head", "head", "-n1", argv[1], (char*)0);
+  perror("P1: Errore nella exec. Termino.\n");
+  exit(EXIT_FAILURE);
+  
+//errore in seguito ad apertura/lettura/scrittura
+int fdbin=open(argv[3],O_RDWR|O_CREAT|O_TRUNC,0640);
+                if(fdbin<0){
+                    fprintf(stderr,"P0: Errore in apertura/creazione del file %s. Termino.\n",argv[3]);
+                    exit(1); 
+                }
+                int written=write(fdbin,&N,sizeof(int));
+                if(written<0){
+                    perror("P0: Errore scrittura su file binario. Termino.\n");
+                    exit(EXIT_FAILURE); 
+                }
+              
+//la stringa S non deve contenere cifre
+k = contiene_cifre(argv[2]);
+    if(k == 1) {
+        printf("S contiene cifre!\n");
+        exit(-2);
+    }
+    strcpy(S, argv[2]);
+----
+int contiene_cifre(char string[])
+{
+    int i;
+    for(i = 0; i < DIM && string[i] != '\0'; i++) {
+        if(isdigit(string[i]))
+            return 1;
+    }
+    return 0;
+}
+
+//controllo apertura del file di input
+if ((fdin = open(argv[3], O_RDONLY)) < 0) {
+		perror("Impossibile aprire il file di input");
+		exit(EXIT_FAILURE);
+	}
+//creo nuovo file di output, se esiste lo tronco, poi ne controllo l'apertura    
+if ((fdout = open(argv[4], O_RDWR | O_CREAT | O_TRUNC, 0755)) < 0) {
+		perror("Impossibile aprire o creare il file di output");
+		exit(EXIT_FAILURE);
+	}   
+       
+--------------------------------------
+<<<<<<<<<<<<<<<< FORK >>>>>>>>>>>>>>>>
+
+pid = fork();
+//Generazione di un processo figlio, restituisce il PID (>0) del processo creato per il padre, 0 per il figlio, o un valore negativo in caso di errore
+
+getpid();
+//restituisce il PID del processo che la chiama
+getppid();
+//restituisce il PID del padre
+
+int pid[n];
+for ( i=0; i<n; i++ ) { // creazione figli
+    pid[i] = fork();
+    if ( pid[i] == 0 ) { // Eseguito dai figli
+        figlio(i); //funzione specificata dall'esercizio da cui lho preso
+    }
+    else if ( pid[i] > 0 ) { // Eseguito dal padre
+        printf("Padre (PID=%d): ho creato il figlio %d (PID %d)\n", getpid(),i, pid[i]);
+    }
+    else {
+        perror("Fork error:");
+        exit(1);
+    }
+}   //questo esempio crea n processi e ne salva i vari pid in pid[]
+
+
+//altrimenti 2 figli:
+ int pid[2];
+ pid[0]=fork();
+ if(pid[0]==0){//P1
+	...
+ }else if(pid[0]>0){
+ 	pid[1]=fork();
+ 	if(pid[1]==0){//P2
+ 		...
+ 	}else if(pid[1]>0){//P0
+ 		...
+ 		//in P0 avremo che pid[0]=P1 e pid[1]=P2
+		wait_child();	//vedi la funzione personalizzata nella spiegazione del wait
+            	wait_child();
+ 	}else{
+            perror("P0: errore nella fork per P2\n");
+            exit(EXIT_FAILURE); 
+        }
+ }else{
+        perror("P0: errore nella fork per P1\n");
+        exit(EXIT_FAILURE); 
+ }
+ 
+ 
+ //oppure un figlio P1 ed un nipote P2 (figlio di P1)
+ //in questo caso ricorda di creare due pipe, uno per la comunicazione p0->p1, l'altro per p1->p2
+ //ricorda dunque di chiudere TUTTI i lati delle pipe inutilizzate
+if(pipe(p0p1) < 0) { // pipe per la comunicazione p0->p1
+        printf("apertura Pipe p0p1 fallita");
+        exit(-4);
+    }
+int pidP1 = fork();
+if(pidP1 == 0) {
+ 	if(pipe(p1p2) < 0) { // pipe per la comunicazione p1->p2
+            printf("apertura Pipe p1p2 fallita");
+            exit(-4);
+        }
+ 	int pidP2 = fork(); // creazione P2
+        if(!pidP2) {
+         	//P2...
+        } else {
+        //P1...
+        }
+} else {
+//P0...
+wait_child();	//vedi la funzione personalizzata nella spiegazione del wait
+}
+        
+-----------------------------------------------
+<<<<<<<<<<<<<<<<<<<< WAIT >>>>>>>>>>>>>>>>>>>>>
+
+pidf=wait(&status);
+//Chiamata bloccante, raccoglie lo stato di terminazione di un figlio.
+//Restituisce il PID del figlio terminato e permette di capire il motivo della terminazione
+
+ if ((char)status==0) 
+        printf("Il processo PID=%d ha calcolato che l'ascensore si è fermato %d volte al piano %d\n",p, status>>8, k);
+    else 
+        printf("Il processo PID=%d ha subito una term. involontaria  per segnale %d\n",p,(char)status);
+//il >>8 sposta lo shift bit a destra di 8 bit, dando così l'informazione cercata
+
+
+for ( i=0; i<num_files; i++ ){
+        int status, terminated_pid;
+        terminated_pid = wait(&status);
+        k=cerca_indice(pid, terminated_pid);  //funzione dell'es da cui lho preso
+        if (WIFEXITED(status)) 
+        {    if ( ! (WEXITSTATUS(status) == EXIT_SUCCESS) ){  
+            fprintf(stderr,"Padre: il figlio con PID=%d  è fallito.\n", terminated_pid);
+            }
+        }
+        else {
+            printf("term. involontaria del figlio (pid= %d, file= %s per segnale %d\n",terminated_pid, argv[k+1], (char)status);
+}
+
+void wait_child() { 
+    int pid_terminated,status;
+terminated_pid=wait(&status);
+                if (WIFEXITED(status)) { // terminazione volontaria nipote copiatore          
+                    if ( ! (WEXITSTATUS(status) == EXIT_SUCCESS) ){  // con fallimento
+                        fprintf(stderr,"%d: il nipote copiatore con PID=%d  è fallito.\n",getpid(), terminated_pid);
+                        exit(EXIT_FAILURE); // figlio termina per fallimento nipote
+                    }
+                }   
+                else { // terminazione involontaria nipote copiatore 
+                    printf("term. involontaria del figlio (pid= %d) per segnale %d\n",terminated_pid, (char)status);
+                    exit(EXIT_FAILURE); // figlio termina per term involontaria nipote
+                }
+
+void wait_child() {
+    int pid_terminated,status;
+    pid_terminated=wait(&status);
+    if (pid_terminated < 0)    {
+        fprintf(stderr, "P0: errore in wait. \n");
+        exit(EXIT_FAILURE);
+    }
+    if(WIFEXITED(status)){
+        printf("P0: terminazione volontaria del figlio %d con stato %d\n",pid_terminated, WEXITSTATUS(status));
+        if (WEXITSTATUS(status) == EXIT_FAILURE){
+            fprintf(stderr, "P0: errore nella terminazione del figlio pid_terminated\n");
+            exit(EXIT_FAILURE);
+        }
+    }else if(WIFSIGNALED(status)){
+        fprintf(stderr, "P0: terminazione involontaria del figlio %d a causa del segnale %d\n", pid_terminated,WTERMSIG(status));
+        exit(EXIT_FAILURE);
+    }
+}
+
+void wait_child() {
+    int pid_terminated,status;
+    pid_terminated=wait(&status);
+    if(WIFEXITED(status))
+        printf("P0: terminazione volontaria del figlio %d con stato %d\n",
+                pid_terminated, WEXITSTATUS(status));
+    else if(WIFSIGNALED(status))
+        printf("P0: terminazione involontaria del figlio %d a causa del segnale %d\n",
+                pid_terminated,WTERMSIG(status));
+}
+
+---------------------------------------------
+<<<<<<<<<<<<<<<<<<< EXEC >>>>>>>>>>>>>>>>>>>>
+
+exec sostituisce il processo corrente con un nuovo programma, se exec ha successo il programma corrente non continua
+se invece fallisce restituisce -1 e poi il programma continua
+il nuovo programma eredita il PID, le var di ambiente ed i file descriptor
+
+-execl: gli argomenti da passare al programma sono passati tramite una lista di argomenti terminati (char*)0 oppure NULL
+-execp: il nome del file viene cercato nel PATH contenuto nell'ambiente del processo
+-execv: gli argomenti sono passati tramite un VETTORE di parametri
+-exece: la system call riceve anche un vettore (envp[]) che rimpiazza l’environment del processo chiamante
+(si possono anche mixare tra loro, come nei seguenti esempi)
+
+-execl("/bin/ls", "ls", "-l", (char *)0);
+
+-execve("/bin/ls", argv, env);
+
+-execlp(st, st, (char *)0);
+
+-execlp("grep","grep","-c",argv[2], aexeclp('head', 'head', '-n1', 'argv[1]', (char*)0);
+  perror("P1: Errore nella exec. Termino.\n");
+  exit(EXIT_FAILURE);rgv[1], (char*)0);
+//grep conta, -c indica le righe, argv2 probabilmente è la parola da contare e argv1 probabilmente è il nome del file
+
+-execlp("cp", "cp", fileI, dir2,(char*)0 );
+//cp nome file, cp copia file, file da copiare, dir in cui copiarlo
+
+-execlp("rm", "rm", fileI, (char*)0 );
+//rimuove il file fileI
+
+-execlp("rev","rev",argv[1],(char*)0);
+//inverte i caratteri del file argv[1]
+
+-------------------------------------------------
+<<<<<<<<<<<<<<<<<<<< SIGNAL >>>>>>>>>>>>>>>>>>>>>
+
+signal(SIG... , P_handler);
+Imposta la reazione del processo all’eventuale ricezione di un segnale
+SIG è il nome del del segnale e P_handler il processo (funzione) che si attiva alla ricezione del segnale
+
+diversi segnali:
+-SIGUSR1 
+-SIGUSR2
+-SIGCHLD è il segnale che il kernel invia a un processo padre quando un figlio termina
+-SIGALRM
+-SIGKILL non si puo assegnare, indica la fine forzata di un processo (vedi in kill)
+
+signal(SIGUSR1, SIG_DFL); //USR1 torna a default
+
+void P_handler(int signo){
+    if (signo==SIGUSR1){
+        printf("P0 (PID=%d): ricevuto SIGUSR1. Finito!\n", getpid());
+        kill(pid1,SIGKILL);
+        kill(pid2,SIGKILL);
+        exit(0);
+    }else if (signo==SIGUSR2){
+        printf("P0 (PID=%d): ricevuto SIGUSR2. Inoltro il segnale a P2!\n", getpid());
+        kill(pid2,SIGUSR2);
+        exit(0);
+    }else if (signo==SIGCHLD){
+        figli_terminati++;
+        printf("P0 (PID=%d): ricevuto SIGCHLD - figli terminati = %d.\n",getpid(), figli_terminati);
+        if (figli_terminati==2){
+            printf("P0 (PID=%d): Tutti i figli sono terminati!\n",getpid());    
+            exit(0);
+        }
+    }else if (signo==SIGALRM){
+        printf("P0 (PID=%d): ricevuto SIGALRM. Timeout scaduto!\n", getpid());
+        kill(pid1,SIGKILL);
+        kill(pid2,SIGKILL);
+        exit(0);
+    }else{
+        perror("P0: Ricezione di segnale imprevisto");
+        exit(EXIT_FAILURE);
+    }    
+}
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< KILL >>>>>>>>>>>>>>>>>>>>>>>
+
+kill(pid, SIG...);
+Invio di un segnale ad un processo, restituisce 0 se tutto va bene o -1 in caso di errore
+(kill -l da shell per una lista dei segnali disponibili)
+
+kill(pid1,SIGKILL); //il processo con pid pid1 viene terminato forzatamente
+
+----------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< PAUSE >>>>>>>>>>>>>>>>>>>>>>>
+
+pause();
+Chiamata bloccante: il processo si sospende fino alla ricezione di un qualsiasi segnale (sempre col comando kill)
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< ALARM >>>>>>>>>>>>>>>>>>>>>>
+
+alarm(5);
+"Schedula" l'invio del segnale SIGALRM al processo chiamante dopo un intervallo di tempo (in secondi) specificato come argomento.
+Ritorna il numero di secondi mancante allo scadere del time-out precedente. Chiamata non bloccante.
+
+----------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< SLEEP >>>>>>>>>>>>>>>>>>>>>>>
+
+sleep(5);
+Sospende il processo chiamante per un numero intero di secondi, oppure fino all'arrivo di un segnale
+Restituisce il numero di secondi che sarebbero rimasti da dormire (0 se nessun segnale è arrivato)
+
+----------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< OPEN >>>>>>>>>>>>>>>>>>>>>>>
+
+open
+Apre il file specificato e restituisce il suo file descriptor (fd)
+• Crea una nuova entry nella tabella dei file aperti di sistema (nuovo I/O pointer)
+• fd è l’indice dell’elemento che rappresenta il file aperto nella tabella dei file aperti del processo (contenuta nella user structure del processo)
+• possibili diversi flag di apertura, combinabili con OR bit a bit (operatore | )
+
+• O_RDONLY (= 0), accesso in lettura
+• O_WRONLY(= 1), accesso in scrittura
+• O_APPEND (= 2), accesso in scrittura, append
+(in più da abbinare con | ci sono: )
+• O_CREAT, per accesso in scrittura: se il file non esiste, viene creato:
+  è necessario fornire il parametro mode, per esprimere i bit di protezione.
+• O_TRUNC, per accesso in scrittura: la lunghezza del file viene troncata a 0.
+
+int fdin=open(filename, O_RDONLY);
+    if(fdin < 0){
+        perror("Errore nell'apertura del file.\n");
+        exit(EXIT_FAILURE);
+    }   //apre il file filename e nel caso di errore viene gestito
+
+- open(fout, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+apre il file (fout) in sola scrittura (O_WRONLY), se non esiste lo crea (O_CREAT), se esiste ne elimina il contnuto (O_TRUNC),
+il proprietario puo leggerlo e scriverlo (6=4+2), il gruppo e gli altri solo leggerlo (4 e 4)
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< CREAT >>>>>>>>>>>>>>>>>>>>>>
+
+int creat(file, int mode);
+creazione di un file in cui mode specifica il livello di protezione
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< CLOSE >>>>>>>>>>>>>>>>>>>>>>
+close(fd_file);
+Chiude il file aperto, libera il file descriptor nella tabella dei file aperti del processo
+Eventualmente elimina elementi dalle tabelle di sistema
+
+close(0) : Standard input (stdin)
+close(1) : Standard output (stdout)
+close(2) : Standard error (stderr)
+
+di solito si usano questi prima di duplicare un fp di una pipe, x es:
+  close(pfd[0]);	//chiudo lato di lettura della pipe
+  close(1);		//chiudo il fd su stdout
+  dup(pfd[1]);		//duplico il lato scrittura della pipe
+  close(pfd[1]);	//una volta duplicato, chiudo il lato scrittura
+//altrimenti close(0); --> dup(pfd[0]);
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< UNLINK >>>>>>>>>>>>>>>>>>>>>
+
+unlink(file);
+Elimina il link al file specificato, cancellando pertanto il file (ritorna 0 se OK, altrimenti -1).
+Occorre che il file descriptor sia stato chiuso per poterne eliminare il link.
+
+int fd_file=open(file, ....) ... ;   //apertura file con fd_file come file descriptor
+lseek(fd_file, ....) .... ;          //eventuali operazioni
+read(fd_file, ....) .... ;           //eventuali operazioni
+close(fd_file);                      //chiusura file descriptor, obbligatoria!
+unlink(file);                        //una volta chiuso fd_file posso cancellare file, non obbligatorio!
+
+altre system call:
+-int link(old, new) //aggiunge un link ad un file
+-int access(pathfile, int amode) //verifica dei diritti di accesso
+	04 read access
+	02 write access
+	01 execute access
+	00 existence
+-int stat(pathfile, struct stat *buf) //verifica degli attributi
+	il parametro buf è il puntatore a una struttura di tipo stat, nella quale vengono restituiti gli attributi del file (definito  nell’header file <sys/stat.h>).
+	-S_ISREG(mode): è un file regolare?
+	-S_ISDIR(mode): è una directory?
+	-S_ISCHR(mode): è un dispositivo a caratteri?
+	-S_ISBLK(mode): è un dispositivo a blocchi?
+-int chmod(char *pathname, char *newmode) //modifica diritti di accesso
+-int chown(char *pathname, int owner, int group)//modifica proprietario
+-chdir per cambiare direttorio
+-opendir apertura dir
+-readdir chiusura dir
+-closedir lettura dir
+
+--------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< READ >>>>>>>>>>>>>>>>>>>>>>
+
+read(fd, buff, n)
+legge al più n bytes a partire dalla posizione dell'I/O pointer e li memorizza in buff
+Restituisce il numero di byte effettivamente letti, 0 per end-of-file, -1 in caso di errore
+ricorda che fd va aperto con open
+
+    consumo cons;
+    if (read(fdin, &cons, sizeof(consumo))!=sizeof(consumo)){
+        perror("P0: Errore nella lettura dell'elemento maggiore da file temporaneo.\n");
+        exit(EXIT_FAILURE);
+    }else{
+        char s[200];
+        sprintf(s,"core: %d\nenergy: %d\n",cons.id,cons.energy);
+        printf("P0: Writing on Fout:\n%s", s);
+        write(fdout,s, strlen(s));
+    }
+    
+//Leggo carattere per carattere fino alla riga lines_to_skip
+    int line_traker=0;
+    char c;
+    while (line_traker<lines_to_skip){
+        read(fdin, &c, sizeof(char));
+        if (c=='\n')
+            line_traker++;
+    }
+  
+//leggo carattere per carattere
+char stringa[250] = "";
+        int i = 0;
+        char c;
+        
+        while(read(pip[0],&c,sizeof(char)) > 0) {
+            
+            if ( c == '\n' ) {
+                if ( i > N )  {
+                    stringa[i] = '\0';
+                    printf("%s\n", stringa);
+                }
+                i = 0;
+            } else {
+                stringa[i++] = c;
+            }
+        }
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< WRITE >>>>>>>>>>>>>>>>>>>>>>
+
+write(fd, buff, n) 
+scrive al più n bytes dal buffer buff nel file a partire dalla posizione dell'I/O pointer
+Restituisce il numero di byte effettivamente scritti o -1 in caso di errore
+
+---------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< LSEEK >>>>>>>>>>>>>>>>>>>>>>
+
+lseek(fd, offset, origine) 
+sposta l’I/O pointer di offset posizioni rispetto all’origine. 
+Possibili valori per origine:
+0 per inizio del file (SEEK_SET)
+1 per posizione corrente (SEEK_CUR)
+2 per fine del file (SEEK_END)
+Restituisce l'offset corrente del file (in bytes) oppure -1 in caso di errore
+
+if (lseek(fdin,elements_to_skip*sizeof(consumo), SEEK_SET)<0){
+        perror("P0: Errore in lseek.\n");
+        exit(EXIT_FAILURE);
+    } //con SEEK_SET viene messo il puntatore all'inizio del file poi vengono skippati elements_to_skip*sizeof(consumo) elementi
+  
+LETTURA AL CONTRARIO (utile per contare i '\n'
+//dichiarazione ciclo
+seek_val = lseek(fdin, -1*sizeof(char), SEEK_END);
+	    if ( seek_val < 0 ){
+	        perror("P1: errore nella lettura del file di input\n");
+	        close(fdin);
+	        exit(EXIT_FAILURE);
+	    } //cosi sposto il fd a fine file
+//read di qualche tipo che legge per sizeof(char) alla volta + una write
+	seek_val = lseek(fdin, -2*sizeof(char), SEEK_CUR); //infine questo che porta lsekk indietro di 2
+//in questo modo leggo fdin (un fd) al contrario e passo il contenuto invertito a al soggetto della write
+
+--------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< PIPE >>>>>>>>>>>>>>>>>>>>>>
+
+int pipe(int fd[])
+crea una pipe e assegna i 2 file descriptor relativi agli estremi di lettura/scrittura ai primi due elementi dell'array fd.
+Restituisce 0 in caso di creazione con successo, -1 in caso di errore
+RICORDATI sempre che se usi il lato in scrittura devi chiudere quello in lettura e viceversa,
+INOLTRE quando finisce il processo devi chiudere il lato che è stato utilizzato (in P0, alla fine, li chiudi entrambi)
+
+int pp[2];
+if (pipe(pp)<0) {
+        perror("Errore nella creazione della pipe");
+        exit(EXIT_FAILURE); 
+    }
+//pp[0] per la lettura
+//pp[1] per la scrittura
+
+----------------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< CLOSE (pipe) >>>>>>>>>>>>>>>>>>>>>>
+
+(per pipe)
+close
+Stessa system call usata per chiudere file descriptor di file regolari
+Nel caso di pipe, usata da un processo per chiudere l'estremità della pipe che non usa.
+quando un processo non deve leggere da pipe --> close(pp[0]);
+quando un processo non deve scrivere su pipe --> close(pp[1]);
+
+---------------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< READ (pipe) >>>>>>>>>>>>>>>>>>>>>>
+
+(per pipe)
+read
+Stessa system call usata per leggere file regolari, ma può essere bloccante:
+Se la pipe è vuota: il processo chiamante attende fino a quando non ci sono dati disponibili.
+
+nread=read(pp[0], &c, sizeof(char))
+
+if(read(pp[0], &X, sizeof(int)) != sizeof(int)) { //legge un int dalla pipe
+            perror("P2: Errore nella lettura da pipe");
+            exit(EXIT_FAILURE);
+        }
+
+----------------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<< WRITE (pipe) >>>>>>>>>>>>>>>>>>>>>>
+
+(per pipe)
+write
+Stessa system call usata per scrivere su file regolari, ma può essere bloccante:
+Se la pipe è piena: il processo chiamante attende fino a quando non c'è spazio sufficiente per scrivere il messaggio.
+
+nread=read(fd_in, &c, sizeof(char)); //legge un char e sposta l'IO pointer avanti di 1 (per leggere il successivo)
+            if(nread<0){
+                perror("P1:Errore nella lettura da file");
+                exit(EXIT_FAILURE);
+            }
+written=write(pp[1],&c, sizeof(char)); //scrive il char letto su pipe, written è il numero di bite letti
+            if(written!=1){
+                perror("P1:Errore nella scrittura su pipe");
+                exit(EXIT_FAILURE);
+            }
+
+-----------------------------------------------------
+<<<<<<<<<<<<<<<<<<<<<<<< DUP >>>>>>>>>>>>>>>>>>>>>>>>
+
+fd1=dup(fd);
+crea una copia dell’elemento della tabella dei file aperti di indice fd.
+La copia viene messa nella prima posizione libera (in ordine crescente di indice) della tabella dei file aperti.
+Assegna a fd1 l’indice della nuova copia, -1 in caso di errore
+Si usa per utilizzare più file descriptor contemporaneamente
+!!!!! si usa quando voi usare un exec (che di norma agirebbe su stdin o stdout) su una pipe o in una pipe
+!!!!! oppure analogo ma al posto della pipe, un file
+
+dup(pp[1]);
+
+//in questo esempio viene chiuso lo standard input 0 e rimpiazzato da pfd[0], in seguito 
+viene chiuso 1, l'uscita, perche poi viene aperto fdout in scrittura 
+void processoP2(char *fileout){
+	close(0);
+    dup(pfd[0]);
+    close(1);
+    int fdout=open(fileout,O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    //int fdout=open(fileout,O_WRONLY);
+    if(fdout<0){
+        fprintf(stderr,"P2: Errore apertura file %s. Termino.\n",fileout);
+        exit(1); 
+    }
+    execlp("cat", "cat", (char*)0);
+    perror("P2: Errore nella exec. Termino.\n");
+    exit(EXIT_FAILURE);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------RISCRITTURA DI TUTTO----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+>>>  COMPILAZIONE FILE C  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+gcc <nomeFile> -o <nomeFileCompilato>
+
+
+
+>>>   RENDERE ESEGUIBILE FILE COMPILATO    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+chmod u+x <nomeFileCompilato>
+
+
+
+>>> ESEGUIRE FILE COMPILATO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+./<nomeFileCompilato> <param1> <param2> ...
+
+Verranno passati i parametri in un'array di stringhe.
+Il primo, alla positione 0, è il nome del mio compilato.
+Al main verranno passati come parametri:
+
+- argc = numero di parametri passati (compreso il nome file)
+- argv = vettore di parametri stringati
+
+
+
+
+
+
+
+>>> SYSTEM CALLS per PROCESSI >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+>>>>>>  GENERARE PROCESSO FIGLIO
+Il processo figlio condivide il codice con il padre alla stessa riga di esecuzione raggiunta, copia tutte le variabili del padre.
+- Successo:  restituisce 0 al figlio e il PID del figlio al padre
+- Fallimento:  numero negativo che indica il codice errore
+
+int PID = fork();
+if (PID > 0){
+    printf("Processo figlio creato (PID: %d)", pid1)
+    // eseguito dal padre
+} else if (PID == 0){
+    // eseguito dai figli
+} else {
+    perror("Fork error: %d", PID);
+    exit(1);
+}
+
+
+>>>>>> ESECUZIONE CODICE
+Il processo che chiama la funzione sovrascrive il codice e i dati con il programma indicato
+
+ESEMPIO: 
+char* comando = "grep -c '%d' %s", x, nomeFile;
+int occorrenze = execlp(comando, comando, (char*)0);
+
+
+
+>>>>>>  TERMINAZIONE PROCESSO
+Termina l'esecuzione il processo. Lo stato di terminazione passato rappresenta l'"errore" di terminazione
+se diverso da 0, con 0 invece si considera una terminazione corretta
+
+exit( <statoTerminazione> );
+
+
+
+
+
+>>> ATTESE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+>>> SIGNAL
+Crea un collegamento tra la ricezione di un segnale ed il suo handler
+
+signal( <nomeSegnale>, <handler> )
+
+
+
+>>> KILL
+Invia un segnale al processo con quel PID
+
+kill( <pid>, <segnale> )origine
+
+
+
+>>> PAUSE
+Il processo bloccante si ferma finchè non si riceve un segnale.
+
+pause()
+
+
+
+>>> ALARM
+Imposta l'invio del segnale SIGALRM ad un tot secondi, NON fermando il processo chiamante.
+Dopo quei secondi, verrà chiamato l'handler.
+Verrà restituito il numero di secondi mancanti alla fine del timer per terminazioni del countdown anticipate.
+
+int endSeconds = alarm( <secondi> )
+
+
+
+>>> SLEEP
+Sospende il processo chiamante per un numero intero di secondi, o fino all'arrivo di un segnale
+Verrà restituito il numero di secondi mancanti alla fine del timer per terminazioni del countdown anticipate.
+
+int endSeconds = sleep( <secondi> )
+
+
+
+
+
+
+>>> GESTIONE FILE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>> PRIMITIVE >>>>>>>>>>>>
+
+>>> OPEN
+int fd = open(<percorsoFile>, <medoto>)
+
+Metodi di apertura:
+  - O_CREAT
+  - O_RDONLY
+  - O_WRONLY
+  - O_APPEND
+Posso anche accodarli ( es. O_CREAT|O_RDONLY )
+
+
+>>> CLOSE
+close(fd)
+
+
+>>> UNLINK
+Elimina il file specificato, ritorna 0 se OK altrimenti -1
+
+unlink(fd)
+
+
+>>> WRITE
+Restituisce -1 in caso di errore
+
+char <buffer>[<dimByteScrittura>]
+write(fd, &<buffer>, <dimByteScrittura>);
+
+
+>>> READ
+Ritorna il numero di caratteri letti.
+
+char <buffer>
+int numRead = read(fd, &<buffer>, <dimByteLettura>)
+
+>>> LSEEK
+Sposta l'I/O pointer del file di offset posizioni a partire dall'origine passata.
+Valori origine:
+  -  SEEK_SET : inizio file
+  -  SEEK_CUR : attuale posizione
+  -  SEEK_END : fine del file
+
+lseek(fd, <offset>, <origine>)
+
+
+
+
+>>> PIPE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+int fd[0] = open(...)
+int fd[1] = open(...)
+pipe (int fd[])
+
+
+Stessi comandi di una scrittura su file, ma di tipo "bloccante"
+(si attende la disponibilità di lettura del ricevente)
+
+ - per chiudere sempre 'close(pipe)'
+
+
+>>> DUP
+int copy = dup(fd)
+
+Copia l'apertura di un file in tabella di sistema.
+
+
+COPIA-INCOLLA >>>>>>>
+
+// PIPE LATO SCRITTURA  - - - - - - -
+// Chiusura lato pipe 'lettura'
+close(pipefd[0]);
+// Rimozione system.out
+close(1); // input  output  error
+int stdoutNuovo = dup(pipefd[1]);
+//close(pipefd[1]);   alla fine
+// - - - - - - - - - - - - - - - - -
+
+// PIPE LATO LETTURA - - - - - - - -
+// Chiusura pipe 'scrittura'
+close(pipefd[1]);
+// Rimozione system.in
+close(0); // input  output  error
+int stdinNuovo = dup(pipefd[0]);
+//close(pipefd[0]);  alla fine
+// - - - - - - - - - - - - - - - - -
+
+
+
+
+

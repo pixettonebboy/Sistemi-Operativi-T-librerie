@@ -1,0 +1,45 @@
+🔍 Cos'è lock.newCondition()?
+lock.newCondition() serve per creare una condizione di attesa/risveglio legata a un oggetto Lock.
+
+È analogo a wait() / notify() dei monitor classici (synchronized), ma più flessibile e potente.
+
+Sintassi:
+java
+Copia
+Modifica
+Condition condizione = lock.newCondition();
+✅ A cosa serve?
+Con Condition, puoi far attendere un thread finché una certa condizione non è vera, e risvegliarlo in seguito.
+
+Esempio:
+java
+Copia
+Modifica
+Lock lock = new ReentrantLock();
+Condition spazioDisponibile = lock.newCondition();
+
+// produttore
+lock.lock();
+try {
+    while (!possoScrivere()) {
+        spazioDisponibile.await(); // aspetta che ci sia spazio
+    }
+    // scrivi nel buffer
+    spazioDisponibile.signal(); // sveglia eventuali consumatori
+} finally {
+    lock.unlock();
+}
+📦 Metodi principali di Condition
+Metodo	Significato
+await()	Il thread si blocca finché non viene risvegliato
+signal()	Risveglia un solo thread in attesa su quella Condition
+signalAll()	Risveglia tutti i thread in attesa
+
+🔒 Importante: tutti questi metodi vanno usati dentro un blocco lock.lock() / unlock().
+
+🔁 Confronto: synchronized vs Lock + Condition
+Feature	synchronized + wait/notify	Lock + Condition
+Una sola condition	this.wait()	Più Condition indipendenti
+Maggiore flessibilità	❌	✅
+Interruzione	Meno controllabile	Più gestibile (InterruptedException)
+Leggibilità	Più semplice	Più esplicito e robusto

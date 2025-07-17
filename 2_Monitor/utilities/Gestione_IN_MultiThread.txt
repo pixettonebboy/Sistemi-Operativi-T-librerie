@@ -1,0 +1,15 @@
+Achille Pisani
+Librerie di Sistemi Operativi T
+
+
+int NT = 10;
+Utente[] utenti = new Utente[NT];
+for (int i = 0; i < NT; i++)
+    utenti[i] = new Utente(i, r);
+
+for (int i = 0; i < NT; i++)
+    utenti[i].start();
+
+for (int i = 0; i < NT; i++)
+    utenti[i].join();
+
